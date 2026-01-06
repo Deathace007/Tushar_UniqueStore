@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Luxe Tech - Curated Excellence</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Config -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#c9a65e",
+              "primary-hover": "#b08d4b",
+              "background-light": "#f8f7f6",
+              "background-dark": "#0f0f0f", // Deepest black
+              "background-dark-secondary": "#1e1b14", // Rich dark tone for contrast
+              "surface-dark": "#1a1a1a",
+              "surface-highlight": "#262626",
+              "card-dark": "#26231d",
+              "border-dark": "#40392b",
+              "text-muted": "#beb39d",
+              "dusty-rose": "#c08a8a",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"],
+              "serif": ["Playfair Display", "serif"],
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        /* Smooth gradient mesh background simulation */
+        .fog-bg {
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(201, 166, 94, 0.08), transparent 25%), 
+                radial-gradient(circle at 85% 30%, rgba(201, 166, 94, 0.05), transparent 25%);
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c9a65e; 
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+        }
+        input[type=range]:focus {
+            outline: none; 
+        }
+
+        /* Custom Checkbox Animation */
+        .custom-checkbox:checked + div {
+            background-color: #c9a65e;
+            border-color: #c9a65e;
+        }
+        .custom-checkbox:checked + div svg {
+            display: block;
+        }
+        
+        .fade-in-up {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-gray-200 font-display selection:bg-primary selection:text-black overflow-x-hidden antialiased transition-colors duration-300">
+    <div id="root"></div>
+
+    <!-- React Library Scripts -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Common Components ---
+
+        const Nav = () => {
+            const navigate = useNavigate();
+            const location = useLocation();
+
+            // Simple active state check
+            const isActive = (path) => location.pathname === path ? 'text-primary' : 'text-gray-300 dark:text-white/80 hover:text-primary';
+
+            return (
+                <nav className="fixed top-0 left-0 w-full z-50 bg-[#1f1b14]/95 backdrop-blur-md border-b border-[#40392b] transition-all duration-300">
+                    <div className="max-w-[1440px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+                        {/* Logo */}
+                        <Link to="/" className="flex items-center gap-3 group cursor-pointer">
+                            <div className="size-8 text-primary group-hover:rotate-180 transition-transform duration-700">
+                                <span className="material-symbols-outlined text-3xl">diamond</span>
+                            </div>
+                            <h2 className="text-white text-xl font-bold tracking-widest uppercase font-serif">Luxe Tech</h2>
+                        </Link>
+                        
+                        {/* Desktop Links */}
+                        <div className="hidden md:flex items-center gap-10">
+                            <Link className={`text-sm font-medium tracking-wide transition-colors ${isActive('/shop')}`} to="/shop">Collections</Link>
+                            <Link className={`text-sm font-medium tracking-wide transition-colors ${isActive('/products')}`} to="/products">Shop</Link>
+                            <Link className="text-gray-300 dark:text-white/80 text-sm font-medium tracking-wide hover:text-primary transition-colors" to="#">Journal</Link>
+                            <Link className="text-gray-300 dark:text-white/80 text-sm font-medium tracking-wide hover:text-primary transition-colors" to="#">About</Link>
+                        </div>
+                        
+                        {/* Actions */}
+                        <div className="flex items-center gap-6">
+                            <button className="text-gray-300 hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">search</span>
+                            </button>
+                            <button className="text-gray-300 hover:text-primary transition-colors relative">
+                                <span className="material-symbols-outlined">shopping_bag</span>
+                                <span className="absolute -top-1 -right-1 size-2 bg-primary rounded-full"></span>
+                            </button>
+                            <button className="text-gray-300 hover:text-primary transition-colors md:hidden">
+                                <span className="material-symbols-outlined">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="bg-[#050505] border-t border-white/5 pt-20 pb-10">
+                <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                        {/* Brand */}
+                        <div className="flex flex-col gap-6">
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-2xl">diamond</span>
+                                <span className="text-white text-lg font-bold tracking-widest uppercase font-serif">Luxe Tech</span>
+                            </div>
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                Redefining the boundaries between luxury fashion and functional technology.
+                            </p>
+                            <div className="flex gap-4">
+                                <a className="text-gray-500 hover:text-primary transition-colors" href="#">IG</a> 
+                                <a className="text-gray-500 hover:text-primary transition-colors" href="#">TW</a>
+                                <a className="text-gray-500 hover:text-primary transition-colors" href="#">LI</a>
+                            </div>
+                        </div>
+                        {/* Links 1 */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-white text-sm font-bold uppercase tracking-widest">Shop</h4>
+                            <div className="flex flex-col gap-3">
+                                <Link className="text-gray-500 text-sm hover:text-white transition-colors" to="/shop">New Arrivals</Link>
+                                <Link className="text-gray-500 text-sm hover:text-white transition-colors" to="/products">Best Sellers</Link>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Accessories</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Gift Cards</a>
+                            </div>
+                        </div>
+                        {/* Links 2 */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-white text-sm font-bold uppercase tracking-widest">Support</h4>
+                            <div className="flex flex-col gap-3">
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">FAQ</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Shipping & Returns</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Care Guide</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Contact Us</a>
+                            </div>
+                        </div>
+                        {/* Links 3 */}
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-white text-sm font-bold uppercase tracking-widest">Legal</h4>
+                            <div className="flex flex-col gap-3">
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Privacy Policy</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Terms of Service</a>
+                                <a className="text-gray-500 text-sm hover:text-white transition-colors" href="#">Cookie Policy</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4">
+                        <p className="text-gray-600 text-xs">© 2024 Luxe Tech Inc. All rights reserved.</p>
+                        <div className="flex gap-4">
+                            <span className="material-symbols-outlined text-gray-600 text-xl">credit_card</span>
+                            <span className="material-symbols-outlined text-gray-600 text-xl">payments</span>
+                            <span className="material-symbols-outlined text-gray-600 text-xl">account_balance</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Page 1: Home Screen ---
+
+        const HomePage = () => {
+            return (
+                <div className="animate-fade-in">
+                    {/* Hero Section */}
+                    <header className="relative min-h-screen w-full flex flex-col pt-20 overflow-hidden fog-bg">
+                        <div className="layout-container flex grow flex-col justify-center items-center relative z-10">
+                            <div className="px-6 lg:px-12 w-full max-w-[1440px] flex flex-1 items-center py-12 md:py-20">
+                                <div className="flex flex-col-reverse lg:flex-row gap-12 lg:gap-20 w-full items-center">
+                                    {/* Content */}
+                                    <div className="flex flex-col gap-8 flex-1 lg:max-w-xl animate-fade-in opacity-0">
+                                        <div className="flex flex-col gap-4">
+                                            <span className="text-primary text-sm font-bold tracking-[0.2em] uppercase">Autumn / Winter 2024</span>
+                                            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight">
+                                                Curated <br/> <span className="italic text-gray-400 font-light">Excellence</span>
+                                            </h1>
+                                            <div className="h-px w-24 bg-primary mt-4 mb-2"></div>
+                                            <h2 className="text-gray-400 text-lg md:text-xl font-light leading-relaxed max-w-md">
+                                                Where artisan craft meets precision engineering. Experience the seamless fusion of high fashion and future technology.
+                                            </h2>
+                                        </div>
+                                        <div className="flex gap-6 mt-4">
+                                            <Link to="/shop" className="group relative px-8 py-4 bg-transparent overflow-hidden rounded-sm transition-all duration-300 hover:shadow-[0_0_20px_rgba(201,166,94,0.3)] border border-primary/30 hover:border-primary">
+                                                <div className="absolute inset-0 w-0 bg-primary/10 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+                                                <span className="relative text-white text-sm font-bold tracking-widest uppercase flex items-center gap-2">
+                                                    Explore Collection 
+                                                    <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+                                                </span>
+                                            </Link>
+                                            <button className="flex items-center gap-2 px-6 py-4 text-gray-400 hover:text-white transition-colors text-sm font-medium tracking-wide group">
+                                                <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">play_circle</span>
+                                                View Film
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {/* Hero Image */}
+                                    <div className="flex-1 w-full lg:h-[70vh] relative animate-fade-in delay-200 opacity-0 group perspective-1000">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10 opacity-80 lg:opacity-40"></div>
+                                        <div className="w-full h-full bg-center bg-no-repeat bg-cover rounded-sm shadow-2xl relative overflow-hidden transition-transform duration-700 hover:scale-[1.01]" data-alt="Moody artistic product photography of a sleek black smartwatch with gold accents in dramatic lighting" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7AW2ZoK3xYHspILSNO9nfFuAZMt9L82FqhH0mixfrezfy-3w46AsEZ-hRj7kgATcRCiRXq6DxhtTy3t9mQemB_XS2TovDLFTYpVpCQ79ddJ13B9EBVN1ikpWtX-wG5dSwlB9hpxxSvKqVyjaBHquZ6IM1Qeb7HUHdhazOS8ERJPxA8oq1gxz6SbDgtrsHxujv77BiyWiJN_qaXDIChckAvEcvwYlW79VhuzHXTlp1XXUwZS-0EWmd2vhPXxyLpnSY1GESfbmChp3D")'}}>
+                                            <div className="absolute bottom-8 right-8 z-20 flex flex-col items-end gap-1">
+                                                <span className="text-white/60 text-xs tracking-widest uppercase">Featured</span>
+                                                <span className="text-white font-serif italic text-xl">The Obsidian Series</span>
+                                            </div>
+                                        </div>
+                                        {/* Decorative Elements */}
+                                        <div className="absolute -top-4 -right-4 size-24 border-t border-r border-primary/20 rounded-tr-3xl"></div>
+                                        <div className="absolute -bottom-4 -left-4 size-24 border-b border-l border-primary/20 rounded-bl-3xl"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Scroll Indicator */}
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-50">
+                            <span className="text-[10px] uppercase tracking-widest text-white/50">Scroll</span>
+                            <div className="w-px h-12 bg-gradient-to-b from-primary to-transparent"></div>
+                        </div>
+                    </header>
+
+                    {/* Featured Categories */}
+                    <section className="py-24 bg-background-dark relative">
+                        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+                            <div className="flex flex-col items-center mb-16 gap-3">
+                                <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase">Catalog</span>
+                                <h2 className="text-white font-serif text-3xl md:text-4xl">Featured Categories</h2>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {[
+                                    { icon: "apparel", title: "Outerwear", desc: "Engineered for the elements.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD365nvwSaIhIQdRaA06PJ0zGwxw-p_FxYTtH9fTWSCy88RFvmaAdhh5ZtUH4YqKRXWft3inh_GKD8F-BnrZjmDoDFXsxGTqvCl1endU7A4_8nQQAUiBQGErMSbpBPKe3cRR7H7YLISoIJEJs5o6hCtspVzL37jYASBatiGxAYANYOVsmd-3j4HujaiqwkU7XrZXV73HD3-5VsjOTrFcYt3hFn9uDA0XIVuuUdVgISDHdnsukj6xUYLpEGVoUrw-sKaGXmXYB-6-EDa" },
+                                    { icon: "watch", title: "Timepieces", desc: "Precision meets heritage.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCks8vgCihCJMjl5u1s3N-g23tpaGTdgiHmK3GeH_hZgXOL61M_G9Xi8JGlpMnUkXIOulSFo5-z8TWrLLWkm1NnFGrV7V7_KNCezeQvF5ORzykanTinZNapu7MP5wKwsxZAPZO-kx1xjLd5QYgCLVAibXQ9YKqvJIjCELMljBjrJGLQv9N2nsMrDvnAZttseMNixHxw1MO3R-qBTize878SdmrIHT9JcE3g4vyOVx1npuc33mq4e2PgNsrIvmzlaslQ7xuJIIbN-gci" },
+                                    { icon: "headphones", title: "Smart Audio", desc: "Immersive soundscapes.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBml8kFq08JEjCTj3dB04F1EboLod0amUeS1jwkcwx-inigA3Qvpi3j66_MVlfWf7SVWo7H1-x7HWAYcH-e9_brKWelnGQrZMWdopkUi35cpJMVPY9TX2pGbqlvcX6wuOy46INslJ8_rDFcQ4wGvPtvG10K79XW4V4n93c4Hb-k3j4JFCWHo-xXOPbanHhd4GUsw81X_vMhWB4lac50h_Ljoyemg6nNtc0z19ETg1smCsuxPGXXHvK5eD9R_MI-LerWlRyLzAv-cUX_" },
+                                    { icon: "steps", title: "Footwear", desc: "Performance in motion.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCWvHumKAOLiFh90O1k_CL67lLk8saMnaQA_GJjKkbGRYLQt0PQJ1HvH1T2WCyrZCYpYmeusZNipNeUznEEowzsXWExpPn8XG6AvZyidaTo84yGHEObWrTnKRJcjGh89ze-wvEE_Vv2Ghgy9ZusDx4hKAvUIwg8XTUhgV10caEs3xLAUoESXLGVQIDMV2CAGhgUGb1EOT_9aoXmP8WuJBmQNYpKqGKeY86s002cfGW_WGQksGGp6qh3_G42yTbMKdq1RFsEPKQGfXr9" }
+                                ].map((item, idx) => (
+                                    <Link key={idx} to="/shop" className="group relative flex flex-col h-[400px] overflow-hidden rounded-sm bg-surface-dark border border-white/5 hover:border-primary/50 transition-colors duration-500">
+                                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" style={{backgroundImage: `url("${item.img}")`}}></div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-90"></div>
+                                        <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                            <span className="material-symbols-outlined text-primary text-3xl mb-2 font-light">{item.icon}</span>
+                                            <h3 className="text-white text-xl font-medium tracking-wide">{item.title}</h3>
+                                            <div className="h-px w-0 bg-primary group-hover:w-12 transition-all duration-500 delay-100"></div>
+                                            <p className="text-gray-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 pt-2">{item.desc}</p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Curated Collection Carousel */}
+                    <section className="py-24 bg-surface-dark/30 border-y border-white/5">
+                        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+                            <div className="flex justify-between items-end mb-12">
+                                <div className="flex flex-col gap-3">
+                                    <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase">This Week</span>
+                                    <h2 className="text-white font-serif text-3xl md:text-4xl">Curated Collection</h2>
+                                </div>
+                                {/* Manual Controls */}
+                                <div className="flex gap-2">
+                                    <button className="size-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:border-primary hover:text-primary transition-all">
+                                        <span className="material-symbols-outlined">chevron_left</span>
+                                    </button>
+                                    <button className="size-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:border-primary hover:text-primary transition-all">
+                                        <span className="material-symbols-outlined">chevron_right</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Carousel Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {[
+                                    { name: "The Weekender", sub: "Full Grain Leather", price: "$450.00", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBC_qCz7tpsAO3Liq4em54cyD5GeEywNi7fb-HZ2t5xPc4bemQkBQcdnGqCJfHfFoUU3VB17I68Sd8lOQPozv2xKcIHGC2jvnLbcbvXfWmoHokyXZ84ClT5n1uLIINbwzTbOTnPOMtqbByGdB7_tku_S9ipFzFD9gjm9CcBJOhgfwxUH_GHh-XbSk4ticHqPgo-LLFAVOs0lF42VmXoiVW7mSQDQptI03tPSeOlpv5XoTo4w2HaudvTXr_Pnyb52EnMfrkfEzT2LneS" },
+                                    { name: "Sonic Pro X", sub: "Adaptive Noise Cancellation", price: "$399.00", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz1FpNo8RBXXpXMi1sADEQWfPBqD8MGGv_u9O7x58XwRxxDY_SI2vYJqqFrhzYp1KDu2CKURRxeRojpIU751_8-j4pyzVdHHKADvMHtJNlWYJWjvCApyXku3aS2yAq4NwTmKsfZBzgY7jFtYcohWGAbVRkO50aqyKWJuW2LGetqaDsaobysmgTU0jehSrE8bdRUqIlk5e5iKpid0mttfCOfgWMjw0iQlNBi7FuWzlDpuSv619rgsa6i4XKXR_gz0vg2Dj_c0O0c0HM" },
+                                    { name: "Eclipse Shades", sub: "Polarized Lenses", price: "$225.00", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAZTTrG1qUMw6RRx0i45vGbbc5RFCPU0RwN42Kdva4z8XeeqKuhz389uMymQIrFkWZjvij4bViTUbiZuXsUdKl2JYiJVoQ6OWRgqlfp7iKTbTbD4JpPRg3AZmT_0UDi_NXgQWxGGeOYxEvCtt_qoAbn8Ugk6AxPZ39A_7sZJ8PhcgBUuGcLbAvRxfUKezyHMNZP2rA2g8c14XKmYxLZuRuF0iBBkIOkeQgE627yaqbYrw34UgSwJ-5FwOCwSSB0v2gT_45_XpdrpGIU" }
+                                ].map((product, idx) => (
+                                    <Link key={idx} to="/product/1" className="group cursor-pointer">
+                                        <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-[#1a1a1a] mb-6">
+                                            <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button className="size-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-primary hover:text-black transition-colors">
+                                                    <span className="material-symbols-outlined text-[16px]">favorite</span>
+                                                </button>
+                                            </div>
+                                            <div className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{backgroundImage: `url("${product.img}")`}}></div>
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
+                                            <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center">
+                                                <span className="text-white text-xs tracking-widest uppercase border-b border-primary pb-1">View Details</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <h3 className="text-white text-lg font-medium">{product.name}</h3>
+                                            <p className="text-gray-500 text-sm">{product.sub}</p>
+                                            <p className="text-primary mt-1">{product.price}</p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Values / Craftsmanship Section */}
+                    <section className="py-24 bg-background-dark">
+                        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
+                                <div className="flex flex-col items-center gap-4 px-4 py-4 group">
+                                    <div className="p-4 rounded-full border border-white/5 bg-surface-dark mb-2 group-hover:border-primary/50 transition-colors duration-500">
+                                        <span className="material-symbols-outlined text-primary text-4xl">diamond</span>
+                                    </div>
+                                    <h3 className="text-white text-lg font-medium tracking-wide">Ethically Sourced</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed max-w-xs">Materials gathered with respect for the environment and the artisans who cultivate them.</p>
+                                </div>
+                                <div className="flex flex-col items-center gap-4 px-4 py-4 group">
+                                    <div className="p-4 rounded-full border border-white/5 bg-surface-dark mb-2 group-hover:border-primary/50 transition-colors duration-500">
+                                        <span className="material-symbols-outlined text-primary text-4xl">handyman</span>
+                                    </div>
+                                    <h3 className="text-white text-lg font-medium tracking-wide">Master Craftsmanship</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed max-w-xs">Each piece is hand-finished by master artisans with decades of experience.</p>
+                                </div>
+                                <div className="flex flex-col items-center gap-4 px-4 py-4 group">
+                                    <div className="p-4 rounded-full border border-white/5 bg-surface-dark mb-2 group-hover:border-primary/50 transition-colors duration-500">
+                                        <span className="material-symbols-outlined text-primary text-4xl">memory</span>
+                                    </div>
+                                    <h3 className="text-white text-lg font-medium tracking-wide">Future Integration</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed max-w-xs">Designed with discreet compartments for modern tech essentials and wearables.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        // --- Page 2: Shop / Categories Screen ---
+
+        const ShopPage = () => {
+            return (
+                <main className="layout-container flex h-full grow flex-col max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pb-20 pt-28">
+                    {/* Breadcrumbs */}
+                    <div className="fade-in-up">
+                        <nav className="flex flex-wrap gap-2 py-4 items-center">
+                            <Link className="text-[#8e8677] hover:text-primary transition-colors text-sm font-medium leading-normal" to="/">Home</Link>
+                            <span className="text-[#5c523d] text-sm font-medium leading-normal">/</span>
+                            <span className="text-white text-sm font-medium leading-normal">Shop</span>
+                        </nav>
+                    </div>
+
+                    {/* Page Heading & Subtitle */}
+                    <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 fade-in-up delay-100">
+                        <div className="flex flex-col gap-3 max-w-2xl">
+                            <h1 className="text-white text-5xl md:text-6xl font-serif italic font-medium leading-tight tracking-[-0.02em]">
+                                Curated <span className="not-italic text-primary">Categories</span>
+                            </h1>
+                            <p className="text-[#beb39d] text-lg font-light leading-relaxed max-w-lg mt-2">
+                                Explore the intersection of high fashion and cutting-edge technology. Each piece is selected for its craftsmanship and innovation.
+                            </p>
+                        </div>
+                        <div className="hidden md:block h-[1px] bg-gradient-to-l from-transparent via-[#40392b] to-transparent flex-grow ml-12 mb-4"></div>
+                    </div>
+
+                    {/* Tabs / Categories Filter */}
+                    <div className="mb-8 border-b border-[#40392b] fade-in-up delay-200">
+                        <div className="flex gap-8 overflow-x-auto pb-[1px]">
+                            {['All Categories', 'Fashion', 'Technology', 'Lifestyle', 'Accessories'].map((cat, i) => (
+                                <a key={cat} className="group flex flex-col items-center justify-center relative pb-4 px-2 cursor-pointer min-w-max">
+                                    <p className={`text-sm font-bold tracking-[0.05em] uppercase transition-colors ${i === 0 ? 'text-white' : 'text-[#8e8677] group-hover:text-white'}`}>{cat}</p>
+                                    <div className={`absolute bottom-0 h-[2px] transition-all duration-300 ${i === 0 ? 'w-full bg-primary shadow-[0_0_10px_rgba(201,166,94,0.5)]' : 'w-0 group-hover:w-full bg-primary/50'}`}></div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* 3-Column Category Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                        {[
+                            { title: "Smart Wearables", sub: "The Future Collection", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCwhAwcc5ZqBBi2WTsQxUjO54XnI37E2IyadMXTctP9zbUV_VMDwha2lcHyimtOXsfS5sjsnpjnrufgjYSchcAy8NOY55GOgfM_Ieb5pzPGyTZzI0SaCq-uWuzreIvugtz30kxn7q8JuBeCbEGMf4ndGIMEyuPAZCB-h_dpgoFItR3XgAaJXg6sVrUy4XouZmwfof4WVfnc8-wwdfzMLicRocU5mOetbw7PfAUVkV8v9gySTpanCLnkbOxINXLGA6rVUpt4ifmQAKMo", tag: "Featured" },
+                            { title: "High-Fidelity Audio", sub: "Sonic Purity", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtYU6f1ny4KRpqQfKw1vioRihXCfl-hdlo512L9wRAldI7f97lthUn-45AaJpXINTZp5ulbDq6vqahn8PDIWrAnfweGdy72UDApx3iBPEpepOijDl9yupdLuOhU59UiAA6_I2uY_REyYsyFLnYJBRwxCStbsqpIo2oMKfpo1Jr7I6XXHSi9u3sBnu-AtF-L8pIT3M7G8q9E5Qajqd9vxaI1i_DaUQaLy0KK6Yfv6l1Esd-DdR0o7t3cDcY72HNZpfm8XYsEZp0pb7T", tag: "Best Seller" },
+                            { title: "Modern Apparel", sub: "Tech-Infused Fabrics", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBr4pA8l1cYi4jDYmEcwLcHySu719sHfvXyVcHGf4hZ1Suu0R4CRaBVF410cO9C9CCLRM1x8DH-8cf2q9lKg6XnhSNZDaAT_3edvOfoyWNv6aMxY_YmBa4GMvXAomp2iBCV_U_4U4lPWydDWanpDQJ6j_lDgBN8JHP6ffza69QNtYSrlKCjSZFtSgeKogT62xkdc5ma0m7vdjZKsrni8Hg4qvHA1u_Z2BwttW59S-SOmPQrISft71jXJ3i4ITD2e0k3-ugwmx7itnRd", tag: "New Season" },
+                            { title: "Accessories", sub: "Everyday Carry", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD14nuI-h52bdFFjewB4qSM4WQEvg3a0cOKKehsmhOCN_WsSTLTH4zFZS1kf1g1cn1K5KKG7rauBMifQvQRLAQt7kk6pfyN1WT4xLbtPuwxYbs_ksAoM7MOKsqRJRWT9v9n7RA8s-3hIlrswgPMWSHYW9Tcr4ysRL7PdrXZ0Lw5GiXW21lm03ILiBQ127ENn0sUkt8UqQKrNExPgZO82tMm6M5ZvwJbTaiiXVYZfshBH2uZKyDTPDNnahyXLoXYtg7WNbP1F5BQdQvK", tag: "Essential" },
+                            { title: "Footwear", sub: "Performance Meets Style", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB3MZ1Drq0Db2_-vdVaE-XlXhktyVyE-XohK8Zy_U7rRKfydOBwS4KHA0K65T9npaecXJM0KnBirTSRVvJefc5oPGvCc2FawipI83g-u78g7sxBZlLhJkeiQCWy8V3hPTI248E3tYhrqK1aeH3UeTZhadtJ1BCM8eLCVbhZXZT7rCq1-hjnIBz1_sy1V1o40EWirKmNVDOMYLR4xwbrD6RnH-hoPTdoMArzRcW-BYL9824sCvn_otvJt32mjgLI6ho28ygJJOh1Lno1", tag: "Limited Edition" },
+                            { title: "Home & Living", sub: "Sanctuary Design", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuA8qdghRWxfAZaGe9nAz6uy1yRhHW5iZcNeJhyGMfFdNHRkdXYdOQjNC4psQWo_5lflsKBm7TIoKHk5NbvefFEKXSjFg3h4DmP43cu7Fbscz5_om7uEKdJkse8ELfZ-xjhBlwmHn2LaroieNDgVcGHC4ryaEvEnCyGG87GGvhGwcElzlZ8HXSvBm79yMGINbj35pSLW15uFoROKEAeQCcQymKVQTtB37XF-ijzP8yl5vRm3b-urmPIeVe7xOWK6R26kTpRKHPVgojne", tag: "Curated" }
+                        ].map((card, idx) => (
+                            <Link key={idx} to="/products" className={`group relative block h-[500px] w-full overflow-hidden rounded-xl bg-surface-dark border border-[#40392b]/50 hover:border-primary/50 transition-all duration-500 fade-in-up delay-${(idx % 3 + 1) * 100}`}>
+                                <div className="absolute inset-0 size-full overflow-hidden">
+                                    <img alt={card.title} className="size-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-105" src={card.img}/>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90"></div>
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                                </div>
+                                <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col gap-2 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                                    <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{card.tag}</span>
+                                    <h3 className="text-white text-3xl font-serif font-medium tracking-wide">{card.title}</h3>
+                                    <div className="h-[1px] w-12 bg-primary/50 my-1 group-hover:w-24 transition-all duration-500"></div>
+                                    <p className="text-[#beb39d] text-sm font-medium opacity-80 group-hover:text-white transition-colors duration-300">{card.sub}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </main>
+            );
+        };
+
+        // --- Page 3: Product List Screen ---
+
+        const ProductsPage = () => {
+            return (
+                <div className="flex min-h-screen w-full flex-col pt-20">
+                    <div className="mx-auto flex w-full max-w-[1400px] flex-1 px-6 py-8 lg:px-10">
+                        {/* Sidebar (Filters) */}
+                        <aside className="hidden w-1/4 pr-10 lg:block">
+                            <div className="sticky top-24 flex flex-col gap-8">
+                                {/* Categories */}
+                                <div className="border-b border-border-dark pb-6">
+                                    <button className="flex w-full items-center justify-between py-2 text-left">
+                                        <span className="text-lg font-bold tracking-tight text-white">Categories</span>
+                                        <span className="material-symbols-outlined text-text-muted">remove</span>
+                                    </button>
+                                    <div className="mt-4 flex flex-col gap-3 pl-1">
+                                        {["All Outerwear", "Tech Jackets", "Smart Layers", "Haptic Accessories"].map((item, idx) => (
+                                            <label key={idx} className="group flex cursor-pointer items-center gap-3">
+                                                <input defaultChecked={idx===0} className="custom-checkbox peer hidden" type="checkbox"/>
+                                                <div className="flex size-5 items-center justify-center rounded border border-border-dark bg-card-dark transition-colors peer-checked:border-primary peer-checked:bg-primary">
+                                                    <span className="material-symbols-outlined hidden text-[14px] text-background-dark font-bold">check</span>
+                                                </div>
+                                                <span className="text-sm text-text-muted group-hover:text-white">{item}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                                {/* Price Range */}
+                                <div className="border-b border-border-dark pb-6">
+                                    <button className="flex w-full items-center justify-between py-2 text-left">
+                                        <span className="text-lg font-bold tracking-tight text-white">Price Range</span>
+                                        <span className="material-symbols-outlined text-text-muted">remove</span>
+                                    </button>
+                                    <div className="mt-6 px-1">
+                                        <div className="relative mb-6 h-1 w-full rounded-full bg-border-dark">
+                                            <div className="absolute h-1 w-2/3 rounded-full bg-primary left-1/4"></div>
+                                            <div className="absolute left-1/4 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-primary bg-background-dark shadow-[0_0_10px_rgba(201,166,94,0.3)]"></div>
+                                            <div className="absolute right-[8%] top-1/2 h-4 w-4 translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-primary bg-background-dark shadow-[0_0_10px_rgba(201,166,94,0.3)]"></div>
+                                        </div>
+                                        <div className="flex items-center justify-between text-xs font-medium text-text-muted">
+                                            <span>$250</span>
+                                            <span>$1,800</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        {/* Product Grid Area */}
+                        <main className="w-full lg:w-3/4">
+                            <div className="mb-10 flex flex-col gap-6">
+                                <div className="flex items-center gap-2 text-sm text-text-muted">
+                                    <Link className="hover:text-primary" to="/">Home</Link>
+                                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                                    <Link className="hover:text-primary" to="/shop">Shop</Link>
+                                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                                    <span className="font-medium text-white">Tech-wear</span>
+                                </div>
+                                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                                    <div>
+                                        <h1 className="text-4xl font-bold tracking-tight text-white">Outerwear & Tech</h1>
+                                        <p className="mt-2 text-text-muted">Blending high fashion with advanced utility.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">
+                                {[
+                                    { name: "Neural Link Jacket", sub: "CyberWeave™", price: "$450", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDho5UeUdFr8Ma4M-Gas8jfG8ZUqSxU5jBRVP9GX4w8TJG3kOcORkXHYWsu3R9LuHdCS_THnJvljyGWeCNVbVWoSCWzzTpt05VD9sSkNVHqVYmENsi0Y4mNyLeLq5CdcWHsHYkObfYO3Lhs2NnPhS5QYj3ew36p_Pv9FY84lvGCRDSRiNl-xX5SnY4TBIf2UPG1P8Pk_zXjd0X8HQDw_QQ4dCuKfOvuRW-HOyPFSBxV-2Lrhx7-fgoeCRWemuso0Puj-fx420PKaIJA", badge: "New" },
+                                    { name: "Nomad Shell V2", sub: "Gore-Tex® Pro", price: "$299", oldPrice: "$420", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCMxyGLvWvJHqglYkWxZvulkc0ghuFZbLnGT3-dJCXvbd45xtyd9UT_KqsV8shZUZOubgDnw7p5yplRo7AuzRvOkAJVUpSLlANe5smF3Bcx7kq7xT9MZoZNEznLqTsqlAkwVkatgwRuCsWiG6B79p9tfxcU9xJSZ32j5K_SR1XQ5fqgPBMMSgZ86KsV7cogM7evOP-tiZ5ao_1JTLcopTZiRH3TtKEUv8q3jKlVxKgSE15fAcxMWkek0DfshFc2XJGSwV297s-so75s", badge: "Sale" },
+                                    { name: "Core Hoodie", sub: "Thermo-Regulating", price: "$180", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCznS_RH5d-PRS6boD_Wk0cn_qz0Je24XPDyQR5jcpyDWnuNo8q_q5ucbtqOw080lryLyiZG0-Rz36McwJUU3Zh_gWJvJz4Rw7Gx2BSbu1iGO4nPhuAf2TWKIxjhfGLvRp0b-9Jrj-ss-POVABJSe9p30Z4ts085OhItcSojZ7Ktqylrs33w0SsBRc-IHHXuRNsHAfItSCSUGKkfaW2tNrIo7wTLpiftHUxsyVZHyNIA7VlaG9wK7N808ivjYBUXf9rfIqEGo4HOs7x" },
+                                    { name: "Ops Cargo Pant", sub: "Ripstop Nylon", price: "$220", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBoKoM7gva_uJByz8WLien0bGQQJjDCAq4aTeFdmhhtAfJPHLfjg2MSkdTKS2oEMPDZnG8_pZIe1lPRhDeh76gVlwJ0VZvA8jDzeoNtGg2fMw2FcseaqRYX9qO2NqWzs9FjtHE-UZb4V9AsP7B5I4WX76Kf38-v7rnHPjtP8wZotCR9UnjBDu0an9xqUpSZBfLUqL4EQLqGUmexjncBxi9-CGicNmTbC16ppufciwdVR1-jwjp8EsNlhDX10WhZTtkCTXVBtbYBc6iI" },
+                                    { name: "Stratus High-Top", sub: "Waterproof", price: "$340", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD8vgfANbF2tylIHh9Sb5o01xFyayOOeaKmUdLWXzVINkmT8HC5X98-Ac5uWRJe3L5H9uzLdHQkKrhw9jX5rMznJ4lQxqOTNETgzBKhluhCqgFFjL0DWXiGJYFLSUvVrIoFVQofWBM6wd3l0gZdPk4glLUId5tuHaPfDFVoUEcoShaDy2PMRnziq_lMFtTt4kWYxH0KBhzDgzygUWRXpJ3RR19SMjXn7gSUMoO3tk0S8V8GGu-S1QoGGvL8ZLZ9yJ-GSLUnqf0eZ4H1", badge: "New" }
+                                ].map((product, idx) => (
+                                    <Link key={idx} to="/product/1" className="group relative flex flex-col gap-4">
+                                        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-card-dark shadow-md transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)]">
+                                            {product.badge && (
+                                                <div className="absolute left-3 top-3 z-20">
+                                                    <span className={`rounded px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#1e1b14] ${product.badge === 'Sale' ? 'bg-[#C5A5A5]' : 'bg-[#C4B5A5]'}`}>{product.badge}</span>
+                                                </div>
+                                            )}
+                                            <button className="absolute right-3 top-3 z-20 flex size-9 translate-y-[-10px] items-center justify-center rounded-full bg-background-dark/80 text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-primary group-hover:translate-y-0 group-hover:opacity-100">
+                                                <span className="material-symbols-outlined text-[20px]">favorite</span>
+                                            </button>
+                                            <img alt={product.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 group-hover:brightness-110" src={product.img}/>
+                                            <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center bg-gradient-to-t from-black/90 to-transparent pb-6 pt-12 transition-transform duration-300 group-hover:translate-y-0">
+                                                <button className="flex items-center gap-2 rounded-lg bg-white px-6 py-2.5 text-sm font-bold text-background-dark transition-colors hover:bg-primary">
+                                                    <span className="material-symbols-outlined text-[18px]">shopping_bag</span>
+                                                    Quick Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors">{product.name}</h3>
+                                                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{product.sub}</p>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className={`text-lg font-medium ${product.oldPrice ? 'text-[#C5A5A5]' : 'text-primary'}`}>{product.price}</span>
+                                                    {product.oldPrice && <span className="text-sm text-text-muted line-through">{product.oldPrice}</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                                {/* Skeleton Loader */}
+                                <div className="flex flex-col gap-4 animate-pulse">
+                                    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-card-dark/50"></div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex justify-between">
+                                            <div className="h-5 w-32 rounded bg-card-dark/50"></div>
+                                            <div className="h-5 w-12 rounded bg-card-dark/50"></div>
+                                        </div>
+                                        <div className="h-3 w-20 rounded bg-card-dark/50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Page 4: Product Detail Screen ---
+
+        const ProductDetailPage = () => {
+            const [quantity, setQuantity] = useState(1);
+
+            return (
+                <div className="flex flex-col min-h-screen pt-20">
+                    <div className="px-4 md:px-8 lg:px-12 xl:px-40 py-6 max-w-[1600px] mx-auto w-full">
+                        {/* Breadcrumbs */}
+                        <div className="flex flex-wrap items-center gap-2 mb-8 text-sm">
+                            <Link className="text-slate-500 dark:text-[#beb39d] hover:text-primary transition-colors" to="/">Home</Link>
+                            <span className="material-symbols-outlined text-slate-400 !text-[14px]">chevron_right</span>
+                            <Link className="text-slate-500 dark:text-[#beb39d] hover:text-primary transition-colors" to="/products">Techwear</Link>
+                            <span className="material-symbols-outlined text-slate-400 !text-[14px]">chevron_right</span>
+                            <span className="text-slate-900 dark:text-white font-medium">Pro-Tech Jacket V2</span>
+                        </div>
+                        {/* Main Product Layout */}
+                        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+                            {/* Left Column: Gallery (55%) */}
+                            <div className="w-full lg:w-[55%] flex flex-col gap-6">
+                                <div className="relative group w-full aspect-[4/5] md:aspect-[16/12] bg-surface-dark rounded-xl overflow-hidden cursor-zoom-in">
+                                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                                        <span className="px-3 py-1 text-xs font-bold tracking-wider text-white bg-dusty-rose rounded-sm">SALE -35%</span>
+                                        <span className="px-3 py-1 text-xs font-bold tracking-wider text-black bg-white/90 backdrop-blur-sm rounded-sm">NEW SEASON</span>
+                                    </div>
+                                    <div className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-700 ease-out group-hover:scale-110" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBhUzIQchoYfDfzmbPkcRqCV1MMcEV7OGME28wOcEtuyQmOUdFMIHs4UBhF8VE6dam8zBaSPe5_dovMs8paQ9wtEgJHFvpOm-8U-HNWXN5XsKNVEEtQ_jYirfBMQHkiI2UvDsv6XhJcZHHAWITwu33IX4AG3FncwetMo4dF1pGDJMrEYKE3Nj3Td45K9ACFFFHXPo8jo-VnIj2OVrZF7PGm8L6iRSpZhgB1ITEoDcfNJunG5bjTavc6_F1EaU4uPjykEdkQmeN6xeG4")'}}></div>
+                                </div>
+                                <div className="w-full overflow-x-auto pb-2">
+                                    <div className="flex gap-4">
+                                        <button className="relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 border-primary ring-2 ring-primary/20">
+                                            <div className="w-full h-full bg-center bg-cover" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBt6mW1jzg_yy6EaAJToyR0MAHAn5zlFbxguODyY2oF3fNAVRFEU9JZrH24h-EVofHQuPiLD-Q37OZ-gs5vd8eIi2xPpTFRyzBJAMHP1wGwXYCGeV4vTbRq9iFkSv3BvtFMWB_a2uwaphmzh6rwbe5tTfQgGcR5B-SXIY_qaRa123KeXe0nv9niPopsrTr9tMgj_pKGz_vRECuZ9ZzyMYgNuQOtr7Qsf_kD5TZL7HpxaAJbEwAfrP64MvBiqC1GC8bd4H1nj3aTohip")'}}></div>
+                                        </button>
+                                        <button className="relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-transparent hover:border-slate-400 dark:hover:border-[#beb39d] opacity-70 hover:opacity-100">
+                                            <div className="w-full h-full bg-center bg-cover" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBsizWdvK7on3e_ApM36QGHAXdh-gWo1OCb64zQ9pIargXOLCrHOJ7C9BGwuv68LaZxO3WI60egFTo88Hl-cjctSHIrHFHITY10cauHuVvCt1DNTSfNd-NPlQ5ynRmzwL9aEgrYa-r4ahSlDQ_eKOxtDcHaWBcX2szzDLNLZ4FfyOggD7Ge0bM1VvR4weKztHNSFFs9FYjd3ftVDwXWcvLJI3kbJXXhVpnGOqyCIca7wjvuH7UjfE91Wn7KiZuXRbOVwj7YZHjdvaiN")'}}></div>
+                                        </button>
+                                        <button className="relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-transparent hover:border-slate-400 dark:hover:border-[#beb39d] opacity-70 hover:opacity-100">
+                                            <div className="w-full h-full bg-center bg-cover" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDF2M3LU-5j3Cqn2TE6ma7yY5d0tI1Iunqto9syNgfeWI4UkW-2k6bdt2r4cVxYYtXeNUvtxMABhDD4FqZULhomMw1Q0x638kCnma2MHzIPvzyeREYUH2F8w3iWPADfc33SATbU7dJIF1JDdtJr9cuw1JX_jfYAmNjA6lKwjLiRy7qq3bsc8Eu8E7tFjIP308T0CwKeXB2hva2t1ixwaoHfetMnwIswUiJJhmSVrRCNOudK0dqd2NNYA6HD7fz-dhHrvBhcpr3bN_e1")'}}></div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Right Column: Info */}
+                            <div className="w-full lg:w-[45%] flex flex-col gap-8 relative">
+                                <div className="sticky top-24">
+                                    <div className="flex flex-col gap-4 border-b border-dashed border-slate-200 dark:border-[#40392b] pb-6">
+                                        <h1 className="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em] text-slate-900 dark:text-white mb-2">Pro-Tech Jacket V2</h1>
+                                        <div className="flex items-baseline gap-3 mt-2">
+                                            <span className="text-3xl font-bold text-primary">$299.00</span>
+                                            <span className="text-xl font-medium text-slate-400 line-through">$450.00</span>
+                                        </div>
+                                        <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mt-2">
+                                            Engineered for the modern nomad. The V2 features our proprietary weather-sealed coating, integrated smart-textile controls, and an adaptive fit system.
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col gap-6 py-6 border-b border-dashed border-slate-200 dark:border-[#40392b]">
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Color: <span className="font-normal text-slate-500 dark:text-[#beb39d]">Obsidian Black</span></h3>
+                                            <div className="flex gap-3">
+                                                <button className="w-10 h-10 rounded-full bg-[#111] ring-2 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark ring-primary shadow-lg"></button>
+                                                <button className="w-10 h-10 rounded-full bg-[#1a237e] ring-2 ring-transparent ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark hover:ring-slate-400 transition-all"></button>
+                                                <button className="w-10 h-10 rounded-full bg-[#424242] ring-2 ring-transparent ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark hover:ring-slate-400 transition-all"></button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between items-center mb-3">
+                                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Size</h3>
+                                            </div>
+                                            <div className="grid grid-cols-4 gap-3">
+                                                <button className="h-12 border border-slate-300 dark:border-[#40392b] hover:border-primary bg-transparent text-slate-900 dark:text-white rounded-lg font-medium transition-all hover:bg-primary/5">S</button>
+                                                <button className="h-12 border-2 border-primary bg-primary/10 text-primary rounded-lg font-bold shadow-sm ring-1 ring-primary/20">M</button>
+                                                <button className="h-12 border border-slate-300 dark:border-[#40392b] hover:border-primary bg-transparent text-slate-900 dark:text-white rounded-lg font-medium transition-all hover:bg-primary/5">L</button>
+                                                <button className="h-12 border border-slate-300 dark:border-[#40392b] bg-slate-100 dark:bg-[#2a261f] text-slate-400 dark:text-[#666] rounded-lg font-medium cursor-not-allowed opacity-60">XL</button>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row gap-4 mt-2">
+                                            <div className="flex items-center justify-between bg-slate-100 dark:bg-[#2a261f] rounded-lg h-14 w-full sm:w-32 px-2 border border-transparent focus-within:border-primary/30">
+                                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 text-slate-500 hover:text-primary transition-colors">
+                                                    <span className="material-symbols-outlined !text-[20px]">remove</span>
+                                                </button>
+                                                <span className="w-8 text-center font-semibold text-slate-900 dark:text-white">{quantity}</span>
+                                                <button onClick={() => setQuantity(quantity + 1)} className="p-2 text-slate-500 hover:text-primary transition-colors">
+                                                    <span className="material-symbols-outlined !text-[20px]">add</span>
+                                                </button>
+                                            </div>
+                                            <button className="flex-1 h-14 bg-primary hover:bg-primary-hover text-black font-bold uppercase tracking-wide rounded-lg shadow-[0_0_15px_rgba(201,166,94,0.3)] hover:shadow-[0_0_20px_rgba(201,166,94,0.5)] transition-all flex items-center justify-center gap-2">
+                                                <span>Add to Bag</span>
+                                                <span className="material-symbols-outlined !text-[20px]">shopping_bag</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- App Component with Router ---
+
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Nav />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/shop" element={<ShopPage />} />
+                        <Route path="/products" element={<ProductsPage />} />
+                        <Route path="/product/:id" element={<ProductDetailPage />} />
+                    </Routes>
+                    <Footer />
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
